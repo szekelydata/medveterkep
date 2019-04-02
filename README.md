@@ -1,8 +1,8 @@
 [<img src="https://szekelydata.csaladen.es/favicon.ico" alt="favicon" height=24 width=24 />  Medvetérkép | székelydata](https://szekelydata.csaladen.es/)
 ========
-[![Alt text](snapshot.png "Optional title")](https://szekelydata.csaladen.es/)  
+[![Alt text](snapshot.png "Optional title")](https://medve.csaladen.es/)  
   
-Ez a kódtár tartalmazza a Medvetérkép weboldalt forráskódját - mindent amire szükséged lehet, hogy reprodukáld a bejegyzésekben beumutatottakat. 
+Ez a kódtár tartalmazza a [Medvetérkép](https://medve.csaladen.es/) weboldalt forráskódját - mindent amire szükséged lehet, hogy reprodukáld a weboldalon bemutatottakat.
 Látogasd meg a __[SZÉKELYDATA](https://szekelydata.csaladen.es)__ blogot.  
   - [Jupyter](https://jupyter.org)-ben [python](https://python.org) és [pandas](https://pandas.pydata.org) segítségével letöltjük és formázzuk az adatokat. Ehhez ez _.ipynb_ kiterjesztésű fájlokat keressél a mappában.
   - _Pandas_-al az adatokat [JSON](https://json.org) formátumba mentjük. Egy vagy több _.json_ kiterjesztésű fájlt fogsz találni.
