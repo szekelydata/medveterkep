@@ -128,8 +128,8 @@
             position: absolute;
             left: 0;
             height: 21px;
-            background-color: rgb(173,142,106);
-            width:100%;
+            background-color: rgb(173, 142, 106);
+            width: 100%;
             bottom: 0px;
         }
 
@@ -204,11 +204,12 @@
             bottom: 33px;
 
         }
+
         #radar2 {
-        position: absolute;
-        left: 15px;
-        font-size: 14px;
-        bottom: 10px;
+            position: absolute;
+            left: 15px;
+            font-size: 14px;
+            bottom: 10px;
 
         }
 
@@ -340,7 +341,8 @@
                     class="fas fa-wifi"></i></a>
         </div>
         <div id='radar2'>
-            <a href='https://docs.google.com/spreadsheets/d/1DC8VZjp-O0fqjoUNuXUyzPg3TYK5XE8wm0W-pcRdwi4/edit#gid=0' target='_blank'>Hibát találtál? Javítsd ki!&nbsp;&nbsp;<i class="fas fa-table"></i></a>
+            <a href='https://docs.google.com/spreadsheets/d/1DC8VZjp-O0fqjoUNuXUyzPg3TYK5XE8wm0W-pcRdwi4/edit#gid=0'
+                target='_blank'>Hibát találtál? Javítsd ki!&nbsp;&nbsp;<i class="fas fa-table"></i></a>
             <a href='https://github.com/szekelydata/medveterkep/issues' target='_blank'>Nem működik? &nbsp;&nbsp;<i
                     class="fab fa-github"></i></a>
         </div>
@@ -473,7 +475,7 @@
             var GSheetID = '1-Ygp1M_nIK-iHq3hqF3qtKNgq6tZHttfzT42_1d_L-E'
             var sheetdata = [];
             var query1 = new
-            google.visualization.Query("https://docs.google.com/spreadsheet/ccc?key=" + GSheetID);
+                google.visualization.Query("https://docs.google.com/spreadsheet/ccc?key=" + GSheetID);
             query1.setQuery("");
             query1.send(handleQueryResponse1);
 
@@ -515,8 +517,8 @@
                                     name: iid,
                                     symbol: 'rect',
                                     value: ((d['Pontosabban hol?'] == form_coords) ? geo_code[igeo] : d[
-                                                'Pontosabban hol?']
-                                            .split(',')).reverse()
+                                        'Pontosabban hol?']
+                                        .split(',')).reverse()
                                         .concat([sheet_severity[d['Milyen eseményről van szó?']]])
                                         .concat([leiras[sheet_severity[d[
                                             'Milyen eseményről van szó?']]]])
@@ -525,13 +527,13 @@
                                             'exact_loc': (d['Pontosabban hol?'] == form_coords) ?
                                                 0 : 1,
                                             'content': (d['Egyedül volt?'] ?
-                                                    '<ul><li>' + d['Egyedül volt?'].split('\n')
+                                                '<ul><li>' + d['Egyedül volt?'].split('\n')
                                                     .join(', ') : ''
-                                                ) +
+                                            ) +
                                                 (d['Közel volt?'] ?
                                                     '</li><li>' + 'Távolság: ' + d['Közel volt?']
-                                                    .split('(')[1]
-                                                    .replace(')', '') : '') +
+                                                        .split('(')[1]
+                                                        .replace(')', '') : '') +
                                                 (d['Még valami?'] ?
                                                     '</li><li>' + d['Még valami?'] : '') +
                                                 '</ul>',
@@ -546,10 +548,10 @@
                                             'severity': sheet_severity[d[
                                                 'Milyen eseményről van szó?']],
                                             'title': (d[
-                                                    'Ismert mackó? Van neve vagy ismertető jele?'
-                                                ] ?
+                                                'Ismert mackó? Van neve vagy ismertető jele?'
+                                            ] ?
                                                 d[
-                                                    'Ismert mackó? Van neve vagy ismertető jele?'
+                                                'Ismert mackó? Van neve vagy ismertető jele?'
                                                 ] :
                                                 'Ismeretlen medve')
                                         })
@@ -565,7 +567,7 @@
                     var GSheetID = '1DC8VZjp-O0fqjoUNuXUyzPg3TYK5XE8wm0W-pcRdwi4'
                     var data = [];
                     var query2 = new
-                    google.visualization.Query("https://docs.google.com/spreadsheet/ccc?key=" + GSheetID);
+                        google.visualization.Query("https://docs.google.com/spreadsheet/ccc?key=" + GSheetID);
                     query2.setQuery("");
                     query2.send(handleQueryResponse2);
 
@@ -593,41 +595,46 @@
                             var res = [];
                             for (var i = 0; i < data.length; i++) {
                                 var d = data[i];
-                                var geoCoord = (!d['longitude']) ? home : [d['longitude'], d['latitude']];
+                                if (!d['longitude'])
+                                    if (d.geo_loc)
+                                        if (geo_code[d.geo_loc])
+                                            console.log('geocoded',d.geo_loc,'to',geo_code[d.geo_loc])
+                                        else
+                                            console.log("can't geocode",d.geo_loc)
+                                var geoCoord = (!d['longitude']) ? (d.geo_loc?geo_code[d.geo_loc].reverse():home) : [d['longitude'], d['latitude']];
                                 var geoCoord = [geoCoord[0] + (Math.random() - 0.5) * s, geoCoord[1] + (
                                     Math
-                                    .random() - 0.5) * s]
-                                var severity = (d.severity == 3) ? 
+                                        .random() - 0.5) * s]
+                                var severity = (d.severity == 3) ?
                                     ((d.deaths > 0) ? 4 : d.severity) : d.severity;
-                                if (geoCoord) {
-                                    if (d.relevant) {
-                                        if (!(d.duplicate)) {
-                                            var dt = d['date'];
-                                            var idate = dt ? new Date(Date.parse(dt)) : 'Ismeretlen';
-                                            var igeo = d.geo_loc;
-                                            var iid = idate.toLocaleString("hu-HU",
-                                                date_options2) + ' ' + igeo
-                                            res.push({
-                                                name: iid,
-                                                symbol: 'circle',
-                                                value: geoCoord
-                                                    .concat([severity, leiras[severity]])
-                                                    .concat({
-                                                        'geo_loc': igeo,
-                                                        'exact_loc': d.exact_loc,
-                                                        'content': d.content,
-                                                        'date': idate,
-                                                        'deaths': d.deaths,
-                                                        'link': d.link,
-                                                        'name': iid,
-                                                        'image': d.image,
-                                                        'severity': severity,
-                                                        'type': 'news',
-                                                        'source': 'Székelyhon',
-                                                        'title': d.title
-                                                    })
-                                            });
-                                        }
+
+                                if (d.relevant) {
+                                    if (!(d.duplicate)) {
+                                        var dt = d['date'];
+                                        var idate = dt ? new Date(Date.parse(dt)) : 'Ismeretlen';
+                                        var igeo = d.geo_loc;
+                                        var iid = idate.toLocaleString("hu-HU",
+                                            date_options2) + ' ' + igeo
+                                        res.push({
+                                            name: iid,
+                                            symbol: 'circle',
+                                            value: geoCoord
+                                                .concat([severity, leiras[severity]])
+                                                .concat({
+                                                    'geo_loc': igeo,
+                                                    'exact_loc': d.exact_loc,
+                                                    'content': d.content,
+                                                    'date': idate,
+                                                    'deaths': d.deaths,
+                                                    'link': d.link,
+                                                    'name': iid,
+                                                    'image': d.image,
+                                                    'severity': severity,
+                                                    'type': 'news',
+                                                    'source': 'Székelyhon',
+                                                    'title': d.title
+                                                })
+                                        });
                                     }
                                 }
                             }
@@ -722,30 +729,30 @@
                                 max: 4,
                                 inverse: true,
                                 pieces: [{
-                                        value: 0,
-                                        label: leiras[0],
-                                        color: colors[0]
-                                    },
-                                    {
-                                        value: 1,
-                                        label: leiras[1],
-                                        color: colors[1]
-                                    },
-                                    {
-                                        value: 2,
-                                        label: leiras[2],
-                                        color: colors[2]
-                                    },
-                                    {
-                                        value: 3,
-                                        label: leiras[3],
-                                        color: colors[3]
-                                    },
-                                    {
-                                        value: 4,
-                                        label: leiras[4],
-                                        color: colors[4]
-                                    }
+                                    value: 0,
+                                    label: leiras[0],
+                                    color: colors[0]
+                                },
+                                {
+                                    value: 1,
+                                    label: leiras[1],
+                                    color: colors[1]
+                                },
+                                {
+                                    value: 2,
+                                    label: leiras[2],
+                                    color: colors[2]
+                                },
+                                {
+                                    value: 3,
+                                    label: leiras[3],
+                                    color: colors[3]
+                                },
+                                {
+                                    value: 4,
+                                    label: leiras[4],
+                                    color: colors[4]
+                                }
                                 ],
                                 itemWidth: 30,
                                 itemHeight: 20,
@@ -773,103 +780,103 @@
                                 }]
                             },
                             series: [{
-                                    id: 'points',
-                                    type: 'scatter',
-                                    coordinateSystem: 'leaflet',
-                                    symbolSize: large_symbol,
-                                    itemStyle: {
-                                        normal: {
-                                            borderColor: 'black',
-                                            opacity: 0.9
-                                        }
-                                    },
-                                    zlevel: 1
+                                id: 'points',
+                                type: 'scatter',
+                                coordinateSystem: 'leaflet',
+                                symbolSize: large_symbol,
+                                itemStyle: {
+                                    normal: {
+                                        borderColor: 'black',
+                                        opacity: 0.9
+                                    }
                                 },
-                                {
-                                    id: 'points2',
-                                    type: 'scatter',
-                                    coordinateSystem: 'leaflet',
-                                    symbolSize: small_symbol,
-                                    hoverAnimation: false,
-                                    silent: true,
-                                    itemStyle: {
-                                        normal: {
-                                            borderColor: 'black',
-                                            opacity: 0.9
-                                        }
-                                    },
-                                    zlevel: 2
+                                zlevel: 1
+                            },
+                            {
+                                id: 'points2',
+                                type: 'scatter',
+                                coordinateSystem: 'leaflet',
+                                symbolSize: small_symbol,
+                                hoverAnimation: false,
+                                silent: true,
+                                itemStyle: {
+                                    normal: {
+                                        borderColor: 'black',
+                                        opacity: 0.9
+                                    }
                                 },
-                                {
-                                    id: 'ripples',
-                                    type: 'effectScatter',
-                                    coordinateSystem: 'leaflet',
-                                    symbolSize: large_symbol,
-                                    rippleEffect: {
-                                        brushType: 'stroke',
+                                zlevel: 2
+                            },
+                            {
+                                id: 'ripples',
+                                type: 'effectScatter',
+                                coordinateSystem: 'leaflet',
+                                symbolSize: large_symbol,
+                                rippleEffect: {
+                                    brushType: 'stroke',
 
-                                    },
-                                    hoverAnimation: true,
-                                    itemStyle: {
-                                        normal: {
-                                            shadowBlur: 4,
-                                            shadowColor: '#333',
-                                            borderColor: 'black',
-                                            opacity: 0.9
-                                        }
-                                    },
-                                    zlevel: 3
                                 },
-                                {
-                                    id: 'ripples2',
-                                    type: 'effectScatter',
-                                    coordinateSystem: 'leaflet',
-                                    symbolSize: small_symbol,
-                                    hoverAnimation: false,
-                                    silent: true,
-                                    itemStyle: {
-                                        normal: {
-                                            borderColor: 'black',
-                                            opacity: 0.9
-                                        }
-                                    },
-                                    zlevel: 4
+                                hoverAnimation: true,
+                                itemStyle: {
+                                    normal: {
+                                        shadowBlur: 4,
+                                        shadowColor: '#333',
+                                        borderColor: 'black',
+                                        opacity: 0.9
+                                    }
                                 },
-                                {
-                                    id: 'infocus',
-                                    type: 'effectScatter',
-                                    coordinateSystem: 'leaflet',
-                                    symbolSize: large_symbol + 5,
-                                    rippleEffect: {
-                                        brushType: 'stroke',
+                                zlevel: 3
+                            },
+                            {
+                                id: 'ripples2',
+                                type: 'effectScatter',
+                                coordinateSystem: 'leaflet',
+                                symbolSize: small_symbol,
+                                hoverAnimation: false,
+                                silent: true,
+                                itemStyle: {
+                                    normal: {
+                                        borderColor: 'black',
+                                        opacity: 0.9
+                                    }
+                                },
+                                zlevel: 4
+                            },
+                            {
+                                id: 'infocus',
+                                type: 'effectScatter',
+                                coordinateSystem: 'leaflet',
+                                symbolSize: large_symbol + 5,
+                                rippleEffect: {
+                                    brushType: 'stroke',
 
-                                    },
-                                    hoverAnimation: true,
-                                    itemStyle: {
-                                        normal: {
-                                            shadowBlur: 4,
-                                            shadowColor: '#333',
-                                            borderColor: 'black',
-                                            opacity: 0.9
-                                        }
-                                    },
-                                    zlevel: 5
                                 },
-                                {
-                                    id: 'infocus2',
-                                    type: 'effectScatter',
-                                    coordinateSystem: 'leaflet',
-                                    symbolSize: small_symbol + 2,
-                                    hoverAnimation: false,
-                                    silent: true,
-                                    itemStyle: {
-                                        normal: {
-                                            borderColor: 'black',
-                                            opacity: 0.9
-                                        }
-                                    },
-                                    zlevel: 6
-                                }
+                                hoverAnimation: true,
+                                itemStyle: {
+                                    normal: {
+                                        shadowBlur: 4,
+                                        shadowColor: '#333',
+                                        borderColor: 'black',
+                                        opacity: 0.9
+                                    }
+                                },
+                                zlevel: 5
+                            },
+                            {
+                                id: 'infocus2',
+                                type: 'effectScatter',
+                                coordinateSystem: 'leaflet',
+                                symbolSize: small_symbol + 2,
+                                hoverAnimation: false,
+                                silent: true,
+                                itemStyle: {
+                                    normal: {
+                                        borderColor: 'black',
+                                        opacity: 0.9
+                                    }
+                                },
+                                zlevel: 6
+                            }
                             ]
                         });
 
@@ -948,13 +955,13 @@
                             setTimeout(() => {
                                 myChart.setOption({
                                     series: [{
-                                            id: 'infocus',
-                                            data: [data_dict[d.name]]
-                                        },
-                                        {
-                                            id: 'infocus2',
-                                            data: (d.exact_loc) ? [data_dict[d.name]] : []
-                                        }
+                                        id: 'infocus',
+                                        data: [data_dict[d.name]]
+                                    },
+                                    {
+                                        id: 'infocus2',
+                                        data: (d.exact_loc) ? [data_dict[d.name]] : []
+                                    }
                                     ]
                                 })
                             }, 500)
@@ -1055,11 +1062,11 @@
 
                         function get_timeline_data(datax) {
                             d = transpose([get_values(datax, 'value', z,
-                                    'severity', true),
-                                get_values(datax, 'value', z,
-                                    'date', false),
-                                get_values(datax, 'value', z,
-                                    'severity', false),
+                                'severity', true),
+                            get_values(datax, 'value', z,
+                                'date', false),
+                            get_values(datax, 'value', z,
+                                'severity', false),
                                 datax
                             ])
                             var dummy = [];
@@ -1090,12 +1097,12 @@
                                 }, {
                                     id: 'ripples',
                                     data: later_than(update_data(datax,
-                                            z, toggle, zoom), z,
+                                        z, toggle, zoom), z,
                                         year)
                                 }, {
                                     id: 'ripples2',
                                     data: later_than(update_data(dataz,
-                                            z, toggle, zoom), z,
+                                        z, toggle, zoom), z,
                                         year)
                                 }]
                             })
@@ -1182,7 +1189,7 @@
                         //         '<a href = "#" id = "fb" class="text"><i class="fab fa-facebook-f"></i></a>' +
                         //         '<a href="" id="tw" target="_blank" class="text"><i class="fab fa-twitter"></i></a>'
                         //     )
-                        
+
                         d3.select('#fb')
                             .attr('onclick',
                                 "window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),'facebook-share-dialog','width=626,height=436');return false;"
