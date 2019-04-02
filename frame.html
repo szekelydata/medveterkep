@@ -597,11 +597,8 @@
                                 var geoCoord = [geoCoord[0] + (Math.random() - 0.5) * s, geoCoord[1] + (
                                     Math
                                     .random() - 0.5) * s]
-                                var severity = (d.severity == 3) ? ((d
-                                        .deaths[
-                                            i] > 0) ? d.severity +
-                                    1 : d
-                                    .severity) : d.severity;
+                                var severity = (d.severity == 3) ? 
+                                    ((d.deaths > 0) ? 4 : d.severity) : d.severity;
                                 if (geoCoord) {
                                     if (d.relevant) {
                                         if (!(d.duplicate)) {
