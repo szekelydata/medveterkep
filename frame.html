@@ -210,7 +210,7 @@
             left: 15px;
             font-size: 14px;
             bottom: 10px;
-
+            text-shadow: 1px 1px 1px black;
         }
 
         #navi i:hover {
@@ -440,6 +440,7 @@
             var minyear = '2006'; //absolute min year for all points
             var zoom = [60, 100] //starting zoom scale in percent of scale (60% about 2014-01)
             var counter = 0; //init counter for first point to show on load
+            var friss='2019.04.01'
             var date_options = {
                 year: "numeric",
                 month: "long",
@@ -513,11 +514,11 @@
                                 var igeo = d['Melyik település környékén?'].split('\n')[1];
                                 var iid = idate.toLocaleString("hu-HU",
                                     date_options2) + ' ' + igeo
+                                var loc=(d['Pontosabban hol?'])?d['Pontosabban hol?']:form_coords
                                 res.push({
                                     name: iid,
                                     symbol: 'rect',
-                                    value: ((d['Pontosabban hol?'] == form_coords) ? geo_code[igeo] : d[
-                                        'Pontosabban hol?']
+                                    value: ((loc == form_coords) ? geo_code[igeo] : loc
                                         .split(',')).reverse()
                                         .concat([sheet_severity[d['Milyen eseményről van szó?']]])
                                         .concat([leiras[sheet_severity[d[
@@ -562,7 +563,7 @@
                     }
 
                     sheetdata = sheet_formatter(sheetdata)
-                    //console.log(sheetdata)
+                    // console.log(sheetdata)
 
                     var GSheetID = '1DC8VZjp-O0fqjoUNuXUyzPg3TYK5XE8wm0W-pcRdwi4'
                     var data = [];
@@ -598,43 +599,46 @@
                                 if (!d['longitude'])
                                     if (d.geo_loc)
                                         if (geo_code[d.geo_loc])
-                                            console.log('geocoded',d.geo_loc,'to',geo_code[d.geo_loc])
+                                            console.log('geocoded', d.geo_loc, 'to', geo_code[d.geo_loc])
                                         else
-                                            console.log("can't geocode",d.geo_loc)
-                                var geoCoord = (!d['longitude']) ? (d.geo_loc?geo_code[d.geo_loc].reverse():home) : [d['longitude'], d['latitude']];
+                                            console.log("can't geocode", d.geo_loc)
+                                s=(d.exact_loc)?(s*1):s; //reduce jitter if exact
+                                var geoCoord = (!d['longitude']) ? (d.geo_loc ? geo_code[d.geo_loc].reverse() : home) : [d['longitude'], d['latitude']];
                                 var geoCoord = [geoCoord[0] + (Math.random() - 0.5) * s, geoCoord[1] + (
                                     Math
                                         .random() - 0.5) * s]
                                 var severity = (d.severity == 3) ?
                                     ((d.deaths > 0) ? 4 : d.severity) : d.severity;
 
-                                if (d.relevant) {
-                                    if (!(d.duplicate)) {
-                                        var dt = d['date'];
-                                        var idate = dt ? new Date(Date.parse(dt)) : 'Ismeretlen';
-                                        var igeo = d.geo_loc;
-                                        var iid = idate.toLocaleString("hu-HU",
-                                            date_options2) + ' ' + igeo
-                                        res.push({
-                                            name: iid,
-                                            symbol: 'circle',
-                                            value: geoCoord
-                                                .concat([severity, leiras[severity]])
-                                                .concat({
-                                                    'geo_loc': igeo,
-                                                    'exact_loc': d.exact_loc,
-                                                    'content': d.content,
-                                                    'date': idate,
-                                                    'deaths': d.deaths,
-                                                    'link': d.link,
-                                                    'name': iid,
-                                                    'image': d.image,
-                                                    'severity': severity,
-                                                    'type': 'news',
-                                                    'source': 'Székelyhon',
-                                                    'title': d.title
-                                                })
-                                        });
+                                if (d.checked) {
+                                    if (d.relevant) {
+                                        if (!(d.duplicate)) {
+                                            var dt = d['date'];
+                                            var idate = dt ? new Date(Date.parse(dt)) : 'Ismeretlen';
+                                            var igeo = d.geo_loc;
+                                            var iid = idate.toLocaleString("hu-HU",
+                                                date_options2) + ' ' + igeo
+                                            res.push({
+                                                name: iid,
+                                                symbol: 'circle',
+                                                value: geoCoord
+                                                    .concat([severity, leiras[severity]])
+                                                    .concat({
+                                                        'geo_loc': igeo,
+                                                        'exact_loc': d.exact_loc,
+                                                        'content': d.content,
+                                                        'date': idate,
+                                                        'deaths': d.deaths,
+                                                        'link': d.link,
+                                                        'name': iid,
+                                                        'image': d.image,
+                                                        'severity': severity,
+                                                        'type': 'news',
+                                                        'source': 'Székelyhon',
+                                                        'title': d.title
+                                                    })
+                                            });
+                                        }
                                     }
                                 }
                             }
@@ -1171,7 +1175,7 @@
                             })
                             d3.select('#center')
                                 .html(home_title +
-                                    ' &copy; 2019<br><span style="font-size:15px">frissült: 2019.03.25</span><br><i>beta verzió</i>'
+                                    ' &copy; 2019<br><span style="font-size:15px">frissült: '+friss+'</span><br><i>beta verzió</i>'
                                 )
                         }
 
