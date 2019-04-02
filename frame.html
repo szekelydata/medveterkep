@@ -693,10 +693,10 @@
                         // console.log(sorted_data)
 
                         for (i = 0; i < sorted_data.length; i++) {
-                            sorted_data[i]['id'] = i + ' ' + sorted_data[i]['name'];
+                            sorted_data[i]['id'] = i// + ' ' + sorted_data[i]['name'];
                             sorted_data[i]['value'][z]['id'] = sorted_data[i]['id']
-                            data_dict[sorted_data[i]['name']] = sorted_data[i];
-                            coord_dict[sorted_data[i]['name']] = sorted_data[i]['value'].slice(0, 2)
+                            data_dict[sorted_data[i]['id']] = sorted_data[i];
+                            coord_dict[sorted_data[i]['id']] = sorted_data[i]['value'].slice(0, 2)
                             if (sorted_data[i]['value'][z]['date'] >= Date.parse(minyear)) {
                                 time_array.push(sorted_data[i]['value'][z]['date'])
                             }
@@ -927,11 +927,11 @@
                         function update_labels(d, map_click) {
 
                             counter = label_dict(datax)[d.id]
-                            console.log(d.id, counter)
+                            console.log('in focus:', d.id, d.name)
 
                             myChart.setOption({
                                 leaflet: {
-                                    center: coord_dict[d.name],
+                                    center: coord_dict[d.id],
                                     zoom: map_click ? Math.max(map_zoom, myChart.getOption()
                                         .leaflet[0].zoom) : map_zoom
                                 }
@@ -960,11 +960,11 @@
                                 myChart.setOption({
                                     series: [{
                                         id: 'infocus',
-                                        data: [data_dict[d.name]]
+                                        data: [data_dict[d.id]]
                                     },
                                     {
                                         id: 'infocus2',
-                                        data: (d.exact_loc) ? [data_dict[d.name]] : []
+                                        data: (d.exact_loc) ? [data_dict[d.id]] : []
                                     }
                                     ]
                                 })
