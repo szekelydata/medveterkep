@@ -15,9 +15,9 @@ Látogasd meg a __[SZÉKELYDATA](https://szekelydata.csaladen.es)__ blogot.
   
 Ezen a __GitHub__ webhelyen menedzseljük a projektet.
 
-- Az __[Issues](https://github.com/csaladenes/szekelydata/issues)__ oldalon találod a jelenlegi fejlesztéseket, illetve a tennivalókat. Ha valami új funkciót szeretnél javasolni, vagy észre vetted, hogy valami nem működik rendesen, itt teheted meg.
+- Az __[Issues](https://github.com/szekelydata/medveterkep/issues)__ oldalon találod a jelenlegi fejlesztéseket, illetve a tennivalókat. Ha valami új funkciót szeretnél javasolni, vagy észre vetted, hogy valami nem működik rendesen, itt teheted meg.
 - A térképhez tartozik egy __[Medveradar](https://medve.csaladen.es/radar)__ néven futó bejelentő krédőív is.
-- Az adatokat egy __[Google Sheet-en alapuló adatbázisból](https://medve.csaladen.es/radar)__ töltjük be. Ezt te is szerkesztheted, miután engedélyt kértél.
+- Az adatokat egy __[Google Sheet-en alapuló adatbázisból](https://medve.csaladen.es/data)__ töltjük be. Ezt te is szerkesztheted, miután engedélyt kértél.
 
 Még több adatvarázslatért __olvasd__ el a [sztorink](http://csaladenes.egologo.ro/?page_id=669) és  __támogasd__ a munkánkat:
 
