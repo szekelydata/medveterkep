@@ -16,7 +16,15 @@
 
         gtag('config', 'UA-57335320-2');
     </script>
-
+    <style>
+        body,
+        html {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
     <meta charset='utf-8'>
     <script src="https://www.google.com/jsapi"></script>
     <script src="js/d3-fetch.v1.min.js"></script>
@@ -28,6 +36,7 @@
 <body>
     <!-- <div id='vis' style="width:650px;height:300px;"></div> -->
     <div id='vis'></div>
+    <div id='vis2'></div>
     <script>
         google.load("visualization", "1");
         google.setOnLoadCallback(init);
@@ -245,7 +254,40 @@
                             }
                         }
 
+                        var yourVlSpec2 = {
+
+                            "$schema": "https://vega.github.io/schema/vega-lite/v3.json",
+                            "data": { "values": all_data },
+                            "transform": [
+                                { "filter": "datum.severity == 0" },
+                                { "filter": "datum.geo_loc == null|datum.geo_loc == 'Csíkszereda'|datum.geo_loc == 'Székelyudvarhely'|datum.geo_loc == 'Marosvásárhely'|datum.geo_loc == 'Sepsiszentgyörgy'" },
+                            ],
+                            "mark": "bar",
+                            "width": "250",
+                            "height": "200",
+                            "encoding": {
+                                "x": {
+                                    "timeUnit": "year",
+                                    "field": "date",
+                                    "type": "ordinal",
+                                    "axis": { "title": "Év" }
+                                },
+                                "y": {
+                                    "aggregate": "count",
+                                    "type": "quantitative",
+                                    "axis": { "title": "Medvepolitikai események" },
+                                },
+                                "color": {
+                                    "field": "geo_loc",
+                                    "type": "nominal",
+                                    "scale": { "scheme": "set1" },
+                                    "axis": { "title": "Város" }
+                                }
+                            }
+                        }
+
                         vegaEmbed('#vis', yourVlSpec);
+                        vegaEmbed('#vis2', yourVlSpec2);
 
                         //END VEGA VIS
 
