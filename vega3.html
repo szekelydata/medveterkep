@@ -223,9 +223,10 @@
                             "data": { "values": all_data },
                             "transform": [
                                 { "filter": "datum.severity != 0" },
+                                { "filter": "datum.megye == ' HR'" },
                             ],
                             "mark": "bar",
-                            "width": "250",
+                            "width": "600",
                             "height": "200",
                             "encoding": {
                                 "x": {
@@ -242,8 +243,8 @@
                                     "field": "leiras",
                                     "type": "nominal",
                                     "scale": {
-                                        "domain": leiras,
-                                        "range": colors
+                                        "domain": leiras.slice(1),
+                                        "range": colors.slice(1)
                                     },
                                     "legend": { "title": "Esemény típusa" }
                                 },

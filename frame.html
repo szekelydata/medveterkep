@@ -341,8 +341,7 @@
                     class="fas fa-wifi"></i></a>
         </div>
         <div id='radar2'>
-            <a href='data/'
-                target='_blank'>Hibát találtál? Javítsd ki!&nbsp;&nbsp;<i class="fas fa-table"></i></a>
+            <a href='data/' target='_blank'>Hibát találtál? Javítsd ki!&nbsp;&nbsp;<i class="fas fa-table"></i></a>
             <a href='https://github.com/szekelydata/medveterkep/issues' target='_blank'>Nem működik? &nbsp;&nbsp;<i
                     class="fab fa-github"></i></a>
         </div>
@@ -440,7 +439,7 @@
             var minyear = '2006'; //absolute min year for all points
             var zoom = [60, 100] //starting zoom scale in percent of scale (60% about 2014-01)
             var counter = 0; //init counter for first point to show on load
-            var friss='2019.04.01'
+            var friss = '2019.04.01'
             var date_options = {
                 year: "numeric",
                 month: "long",
@@ -514,17 +513,11 @@
                                 var igeo = d['Melyik település környékén?'].split('\n')[1];
                                 var iid = idate.toLocaleString("hu-HU",
                                     date_options2) + ' ' + igeo
-                                if (Object.keys(geo_code).includes(igeo)) {
-                                    var coords=geo_code[igeo];
-                                } else {
-                                    console.log("can't geocode",igeo,'...');
-                                    var coords=form_coords;
-                                }
-                                var loc=(d['Pontosabban hol?'])?d['Pontosabban hol?']:form_coords
+                                var loc = (d['Pontosabban hol?']) ? d['Pontosabban hol?'] : form_coords
                                 res.push({
                                     name: iid,
                                     symbol: 'rect',
-                                    value: ((loc == form_coords) ? coords : loc
+                                    value: ((loc == form_coords) ? geo_code[igeo] : loc
                                         .split(',')).reverse()
                                         .concat([sheet_severity[d['Milyen eseményről van szó?']]])
                                         .concat([leiras[sheet_severity[d[
@@ -608,7 +601,7 @@
                                             console.log('geocoded', d.geo_loc, 'to', geo_code[d.geo_loc])
                                         else
                                             console.log("can't geocode", d.geo_loc)
-                                s=(d.exact_loc)?(s*1):s; //reduce jitter if exact
+                                s = (d.exact_loc) ? (s * 1) : s; //reduce jitter if exact
                                 var geoCoord = (!d['longitude']) ? (d.geo_loc ? geo_code[d.geo_loc].reverse() : home) : [d['longitude'], d['latitude']];
                                 var geoCoord = [geoCoord[0] + (Math.random() - 0.5) * s, geoCoord[1] + (
                                     Math
@@ -1181,7 +1174,7 @@
                             })
                             d3.select('#center')
                                 .html(home_title +
-                                    ' &copy; 2019<br><span style="font-size:15px">frissült: '+friss+'</span><br><i style="font-size:15px">1.0 verzió</i>'
+                                    ' &copy; 2019<br><span style="font-size:15px">frissült: ' + friss + '</span><br><i style="font-size:15px">1.0 verzió</i>'
                                 )
                         }
 
