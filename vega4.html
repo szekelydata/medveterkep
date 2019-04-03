@@ -119,7 +119,8 @@
                 sheetdata = data_lists_to_object_array(data_to_lists(ColumnNames, DataArray))
                 // console.log(sheetdata)
 
-                d3.json("geo/hun_geo.json").then(function (geo_code) {
+                d3.json("geo/megyek.json").then(function (geo_code) {
+                    // console.log(geo_code)
 
                     function sheet_formatter(data) {
                         var res = [];
@@ -137,7 +138,7 @@
                                     'Milyen eseményről van szó?']];
                                 res.push({
                                     'geo_loc': igeo,
-                                    'megye': (Object.keys(geo_code).includes(igeo)) ? geo_code[igeo].megye : null,
+                                    'megye': geo_code[igeo] ? geo_code[igeo] : null,
                                     'date': idate,
                                     'deaths': '',
                                     'name': iid,
@@ -194,11 +195,43 @@
                                             var dt = d['date'];
                                             var idate = dt ? new Date(Date.parse(dt)) : 'Ismeretlen';
                                             var igeo = d.geo_loc;
+                                            geo_code['Tusnádfürdõ'] = 'Hargita';
+                                            geo_code['Libán'] = 'Hargita';
+                                            geo_code['Bánkfalva'] = 'Hargita';
+                                            geo_code['Predeal'] = 'Brassó';
+                                            geo_code['Zernyest'] = 'Brassó';
+                                            geo_code['Bodok'] = 'Kovászna';
+                                            geo_code['Bálványos'] = 'Kovászna';
+                                            geo_code['Kecset'] = 'Hargita';
+                                            geo_code['Kászon'] = 'Hargita';
+                                            geo_code['Gyergyóditró'] = 'Hargita';
+                                            geo_code['Bakta'] = 'Hargita';
+                                            geo_code['Postăvarul'] = 'Brassó';
+                                            geo_code['Comarnic'] = 'Más megye';
+                                            geo_code['Aninoasa'] = 'Más megye';
+                                            geo_code['Fundata'] = 'Brassó';
+                                            geo_code['Brassópojána'] = 'Brassó';
+                                            geo_code['Keresztény-havas'] = 'Brassó';
+                                            geo_code['Szent Anna-tó'] = 'Hargita';
+                                            geo_code['Pongrác tető'] = 'Hargita';
+                                            geo_code['Csíkkarcfalva'] = 'Hargita';
+                                            geo_code['Ivó'] = 'Hargita';
+                                            geo_code['Büdösfürdő'] = 'Hargita';
+                                            geo_code['Szeben'] = 'Más megye';
+                                            geo_code['Zlata-csúcs'] = 'Más megye';
+                                            geo_code['Bucegi'] = 'Más megye';
+                                            geo_code['Corbeni'] = 'Más megye';
+                                            geo_code['Berislăvești'] = 'Más megye';
+                                            geo_code['Bekecs'] = 'Maros';
+                                            geo_code['Valea Doftanei'] = 'Más megye';
+                                            if (igeo)
+                                                if (!(geo_code[igeo]))
+                                                    console.log('nincs megye...', igeo, geo_code[igeo])
                                             var iid = idate.toLocaleString("hu-HU",
                                                 date_options2) + ' ' + igeo
                                             res.push({
                                                 'geo_loc': igeo,
-                                                'megye': (Object.keys(geo_code).includes(igeo)) ? geo_code[igeo].megye : null,
+                                                'megye': geo_code[igeo] ? geo_code[igeo] : 'Hargita',
                                                 'date': idate,
                                                 'deaths': d.deaths,
                                                 'name': iid,
@@ -251,9 +284,9 @@
                                 "mark": "bar",
                                 "transform": [
                                     { "filter": "datum.severity != 0" },
-                                    { "filter": "datum.megye == ' BV'" },
+                                    { "filter": "datum.megye == 'Brassó'" },
                                 ],
-                                "width": 30,
+                                "width": 60,
                                 "encoding": {
                                     "x": {
                                         "field": "geo_loc",
@@ -268,7 +301,7 @@
                                 "mark": "bar",
                                 "transform": [
                                     { "filter": "datum.severity != 0" },
-                                    { "filter": "datum.megye == ' MS'" },
+                                    { "filter": "datum.megye == 'Maros'" },
                                 ],
                                 "width": 250,
                                 "encoding": {
@@ -285,7 +318,7 @@
                                 "mark": "bar",
                                 "transform": [
                                     { "filter": "datum.severity != 0" },
-                                    { "filter": "datum.megye == ' CV'" },
+                                    { "filter": "datum.megye == 'Kovászna'" },
                                 ],
                                 "width": 250,
                                 "encoding": {
@@ -308,7 +341,7 @@
                             "mark": "bar",
                             "transform": [
                                 { "filter": "datum.severity != 0" },
-                                { "filter": "datum.megye == ' HR'" },
+                                { "filter": "datum.megye == 'Hargita'" },
                             ],
                             "encoding": {
                                 "x": {
