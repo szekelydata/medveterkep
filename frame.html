@@ -514,11 +514,17 @@
                                 var igeo = d['Melyik település környékén?'].split('\n')[1];
                                 var iid = idate.toLocaleString("hu-HU",
                                     date_options2) + ' ' + igeo
+                                if (Object.keys(geo_code).includes(igeo)) {
+                                    var coords=geo_code[igeo];
+                                } else {
+                                    console.log("can't geocode",igeo,'...');
+                                    var coords=form_coords;
+                                }
                                 var loc=(d['Pontosabban hol?'])?d['Pontosabban hol?']:form_coords
                                 res.push({
                                     name: iid,
                                     symbol: 'rect',
-                                    value: ((loc == form_coords) ? geo_code[igeo] : loc
+                                    value: ((loc == form_coords) ? coords : loc
                                         .split(',')).reverse()
                                         .concat([sheet_severity[d['Milyen eseményről van szó?']]])
                                         .concat([leiras[sheet_severity[d[

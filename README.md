@@ -11,7 +11,7 @@ Látogasd meg a __[SZÉKELYDATA](https://szekelydata.csaladen.es)__ blogot.
 - _Pandas_-al az adatokat [JSON](https://json.org) formátumba mentjük. Egy vagy több _.json_ kiterjesztésű fájlt fogsz találni.
 - A _JSON_ fájlokból [D3](https://d3js.org) illetve [echarts](https://ecomfe.github.io/) segítségével adatvizualizációt építünk. A végső térképet [HTML](https://www.w3schools.com/html/default.asp)-el és [CSS](https://www.w3schools.com/html/html_css.asp)-el formázzuk. A mappában  találsz majd egy _index.html_ fájlt, és egy _frame.html_ fájlt is.
 - Az adatvizualizáció grafikus motorjai az [SVG](https://www.w3schools.com/html/html5_svg.asp) és (ritkábban) a [Canvas](https://www.w3schools.com/html/html5_canvas.asp) formátumok.
-- A térkép megjelenítéséhez használt bővítmény a [leafletjs](http://leafletjs.com/). A térképszolgáltató az [OpenStreetMap](http://www.openstreetmap.org/copyright), a magayr térképcímkék forrása pedig a [Wikimedia](https://maps.wikimedia.org/).
+- A térkép megjelenítéséhez használt bővítmény a [leafletjs](http://leafletjs.com/). A térképszolgáltató az [OpenStreetMap](http://www.openstreetmap.org/copyright), a magyar térképcímkék forrása pedig a [Wikimedia](https://maps.wikimedia.org/).
   
 Ezen a __GitHub__ webhelyen menedzseljük a projektet.
 

@@ -1,0 +1,261 @@
+<html>
+
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-57335320-2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.3.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@3.1.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@4.0.0"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-57335320-2');
+    </script>
+
+    <meta charset='utf-8'>
+    <script src="https://www.google.com/jsapi"></script>
+    <script src="js/d3-fetch.v1.min.js"></script>
+    <script src="js/d3-selection.v1.min.js"></script>
+    <script src="js/echarts.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+
+<body>
+    <!-- <div id='vis' style="width:650px;height:300px;"></div> -->
+    <div id='vis'></div>
+    <script>
+        google.load("visualization", "1");
+        google.setOnLoadCallback(init);
+
+        function init() {
+
+            var query_type = 'data'
+            var form_coords = '46.30000, 25.70000';
+            var sheet_severity = {
+                'Medvét láttam a környéken': 1,
+                'Állatokra támadt': 2,
+                'Emberre támadt': 3,
+                'Állatokra támadott': 2,
+                'Emberre támadott': 3,
+                'Emberi áldozat': 4,
+                'Medvepolitikai döntés vagy esemény': 0
+            }
+            var leiras = ['Más esemény',
+                'Medvét láttak',
+                'Állatokra támadt',
+                'Emberre támadt',
+                'Emberáldozat'
+            ];
+            var colors = ['#35978f', '#80cdc1', '#dfc27d', '#8c510a', '#543005'];
+            var today = new Date()
+            var year = new Date().setDate(today.getDate() - 30) //'2019-03'; //min date to show ripple
+            var minyear = '2006'; //absolute min year for all points
+            var date_options = {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            };
+            var date_options2 = {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric"
+            };
+
+            function data_to_lists(ColumnNames, DataArray) {
+                return [ColumnNames].concat(DataArray)
+            }
+
+            function data_lists_to_object_array(data) {
+                var dummy = [];
+                var keys = data[0]
+                for (i = 1; i < data.length; i++) {
+                    var d = {};
+                    for (j = 0; j < keys.length; j++) {
+                        d[keys[j]] = data[i][j];
+                    }
+                    dummy.push(d);
+                }
+                return dummy
+            }
+
+            var GSheetID = '1-Ygp1M_nIK-iHq3hqF3qtKNgq6tZHttfzT42_1d_L-E'
+            var sheetdata = [];
+            var query1 = new
+                google.visualization.Query("https://docs.google.com/spreadsheet/ccc?key=" + GSheetID);
+            query1.setQuery("");
+            query1.send(handleQueryResponse1);
+
+            function handleQueryResponse1(response) {
+                var data = response.getDataTable();
+                var ColumnNames = []
+                var n_col = data.getNumberOfColumns()
+                var DataArray = new Array(data.getNumberOfRows());
+
+                for (var col = 0; col < n_col; col++) {
+                    ColumnNames.push(data.getColumnLabel(col))
+                }
+                for (var row = 0; row <
+                    data.getNumberOfRows(); row++) {
+                    DataArray[row] = new Array(n_col);
+                    for (var col = 0; col < n_col; col++) {
+                        DataArray[row][col] = data.getValue(row, col);
+                    }
+                }
+
+                sheetdata = data_lists_to_object_array(data_to_lists(ColumnNames, DataArray))
+                // console.log(sheetdata)
+
+                d3.json("geo/huncoords.json").then(function (geo_code) {
+
+                    function sheet_formatter(data) {
+                        var res = [];
+                        for (var i = 0; i < data.length; i++) {
+                            var d = data[i];
+                            if (d['Display'] != 0) {
+                                var pt = d['Mikor történt az eset?'].split("/");
+                                var dt = pt[1] + '/' + pt[0] + '/' + pt[2];
+                                var iname = d['Submission ID'];
+                                var idate = dt ? new Date(Date.parse(dt)) : 'Ismeretlen';
+                                var igeo = d['Melyik település környékén?'].split('\n')[1];
+                                var iid = idate.toLocaleString("hu-HU",
+                                    date_options2) + ' ' + igeo
+                                var severity = sheet_severity[d[
+                                    'Milyen eseményről van szó?']];
+                                res.push({
+                                    'geo_loc': igeo,
+                                    'date': idate,
+                                    'deaths': '',
+                                    'name': iid,
+                                    'source': 'Medveradar',
+                                    'severity': severity,
+                                    'severity1': 4 - severity,
+                                    'leiras': leiras[severity],
+                                    'color': colors[severity]
+                                });
+                            }
+                        }
+                        return res;
+                    }
+
+                    sheetdata = sheet_formatter(sheetdata)
+                    // console.log(sheetdata)
+
+                    var GSheetID = '1DC8VZjp-O0fqjoUNuXUyzPg3TYK5XE8wm0W-pcRdwi4'
+                    var data = [];
+                    var query2 = new
+                        google.visualization.Query("https://docs.google.com/spreadsheet/ccc?key=" + GSheetID);
+                    query2.setQuery("");
+                    query2.send(handleQueryResponse2);
+
+                    function handleQueryResponse2(response) {
+                        var data = response.getDataTable();
+                        var ColumnNames = []
+                        var n_col = data.getNumberOfColumns()
+                        var DataArray = new Array(data.getNumberOfRows());
+
+                        for (var col = 0; col < n_col; col++) {
+                            ColumnNames.push(data.getColumnLabel(col))
+                        }
+                        for (var row = 0; row <
+                            data.getNumberOfRows(); row++) {
+                            DataArray[row] = new Array(n_col);
+                            for (var col = 0; col < n_col; col++) {
+                                DataArray[row][col] = data.getValue(row, col);
+                            }
+                        }
+
+                        data = data_lists_to_object_array(data_to_lists(ColumnNames, DataArray))
+                        //console.log(data)
+
+                        function data_formatter(data) {
+                            var res = [];
+                            for (var i = 0; i < data.length; i++) {
+                                var d = data[i];
+                                var severity = (d.severity == 3) ?
+                                    ((d.deaths > 0) ? 4 : d.severity) : d.severity;
+                                if (d.checked) {
+                                    if (d.relevant) {
+                                        if (!(d.duplicate)) {
+                                            var dt = d['date'];
+                                            var idate = dt ? new Date(Date.parse(dt)) : 'Ismeretlen';
+                                            var igeo = d.geo_loc;
+                                            var iid = idate.toLocaleString("hu-HU",
+                                                date_options2) + ' ' + igeo
+                                            res.push({
+                                                'geo_loc': igeo,
+                                                'date': idate,
+                                                'deaths': d.deaths,
+                                                'name': iid,
+                                                'severity': severity,
+                                                'severity1': 4 - severity,
+                                                'leiras': leiras[severity],
+                                                'color': colors[severity],
+                                                'source': 'Székelyhon'
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                            return res;
+                        }
+
+                        data = data_formatter(data)
+                        // console.log(data)
+
+                        // console.log(data)
+                        var all_data = data.concat(sheetdata)
+                        // console.log(all_data)
+
+                        console.log(all_data)
+
+                        //VEGA VIS
+
+                        var yourVlSpec = {
+
+                            "$schema": "https://vega.github.io/schema/vega-lite/v3.json",
+                            "data": { "values": all_data },
+                            "transform": [
+                                { "filter": "datum.severity == 2" },
+                            ],
+                            "mark": "bar",
+                            "width": "250",
+                            "height": "200",
+                            "encoding": {
+                                "x": {
+                                    "timeUnit": "year",
+                                    "field": "date",
+                                    "type": "ordinal",
+                                    "axis": { "title": "Év" }
+                                },
+                                "y": {
+                                    "aggregate": "sum",
+                                    "type": "quantitative",
+                                    "field": "deaths",
+                                    "axis": { "title": "Áldozatok száma" },
+                                },
+                                "color": {
+                                    "timeUnit": "month",
+                                    "field": "date",
+                                    "type": "ordinal",
+                                    "axis": { "title": "Hónap" }
+                                }
+                            }
+                        }
+
+                        vegaEmbed('#vis', yourVlSpec);
+
+                        //END VEGA VIS
+
+                    }
+                });
+            };
+        };
+    </script>
+</body>
+
+</html>
