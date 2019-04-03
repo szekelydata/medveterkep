@@ -38,94 +38,17 @@
     <title>🐻 Medvetérkép | székelydata</title>
     <link rel="shortcut icon" href="https://szekelydata.csaladen.es/blog/favicon.ico" />
 
-    <style>
-        html,
-        body {
-            height: 100%;
-            width: 100%;
-
-            background-color: #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            padding: 0;
-            margin: 0;
-            border: none;
-            overflow: hidden;
-        }
-
-        div {
-            transition: opacity 0.5s;
-            -webkit-transition: opacity 0.5s;
-        }
-
+    <style>   
         iframe {
-            border: 1px solid #9EA8B1;
+            width:750px;
+            height:260px;
+            border: 1x solid red;
             overflow: hidden;
-            background: none;
-            padding: 0;
-            margin: 0;
-            display: block;
-        }
-
-        #fr {
-            z-index: 2;
-
         }
     </style>
 
 <body>
-    <div id='fr'>
-        <iframe id="container">
-        </iframe>
-    </div>
-    <script>
-
-        var width = 1000;
-        var height = 640;
-
-        var rescale = function () {
-
-            //scale content
-            var container = document.getElementById("container")
-            var parent = document.body;
-            var scal = Math.min(
-                (parent.offsetWidth) /
-                width,
-                (parent.offsetHeight) /
-                height)
-
-            if (scal < 1) {
-
-                console.log('rendering...scaling', scal)
-                container.width = width
-                container.height = height
-
-                container.style.WebkitTransform = "scale(" + scal + ")";
-                container.style.OTransform = "scale(" + scal + ")";
-                container.style.MozTransform = "scale(" + scal + ")";
-                container.style.msTransform = "scale(" + scal + ")";
-                container.style.Transform = "scale(" + scal + ")";
-
-                container.style.WebkitTransformOrigin = "50% 50%";
-                container.style.OTransformOrigin = "50% 50%";
-                container.style.MozTransformOrigin = "50% 50%";
-                container.style.msTransformOrigin = "50% 50%";
-                container.style.TransformOrigin = "50% 50%";
-            }
-            else {
-                console.log('rendering...no scaling', scal)
-                container.width = parent.offsetWidth
-                container.height = parent.offsetHeight
-            }
-
-            container.setAttribute('src', 'vega.html')
-
-        };
-
-        //init view
-        rescale();
-
+    <iframe id="container" src='vega.html'>
+    </iframe>
     </script>
 </body>
