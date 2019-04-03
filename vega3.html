@@ -27,7 +27,8 @@
 
 <body>
     <!-- <div id='vis' style="width:650px;height:300px;"></div> -->
-    <div id='vis'></div>
+    <div id='vis'></div><br>
+    <div id='vis2'></div>
     <script>
         google.load("visualization", "1");
         google.setOnLoadCallback(init);
@@ -128,7 +129,7 @@
                                     'Milyen eseményről van szó?']];
                                 res.push({
                                     'geo_loc': igeo,
-                                    'megye': (Object.keys(geo_code).includes(igeo))?geo_code[igeo].megye:null,
+                                    'megye': (Object.keys(geo_code).includes(igeo)) ? geo_code[igeo].megye : null,
                                     'date': idate,
                                     'deaths': '',
                                     'name': iid,
@@ -189,7 +190,7 @@
                                                 date_options2) + ' ' + igeo
                                             res.push({
                                                 'geo_loc': igeo,
-                                                'megye': (Object.keys(geo_code).includes(igeo))?geo_code[igeo].megye:null,
+                                                'megye': (Object.keys(geo_code).includes(igeo)) ? geo_code[igeo].megye : null,
                                                 'date': idate,
                                                 'deaths': d.deaths,
                                                 'name': iid,
@@ -213,46 +214,114 @@
                         var all_data = data.concat(sheetdata)
                         // console.log(all_data)
 
-                        console.log(all_data)
-
                         //VEGA VIS
+                        var cs = {
+                            "field": "leiras",
+                            "type": "nominal",
+                            "scale": {
+                                "domain": leiras.slice(1),
+                                "range": colors.slice(1)
+                            },
+                            "axis": { "title": "Esemény típusa" }
+                        }
+
+                        var cs2 = JSON.parse(JSON.stringify(cs));
+                        cs2["legend"] = null;
+                        var ys = {
+                            "aggregate": "count",
+                            "type": "quantitative",
+                            "axis": {
+                                "title": "Események száma",
+                            },
+                            "scale": {
+                                "domain": [0, 14]
+                            }
+                        }
 
                         var yourVlSpec = {
 
                             "$schema": "https://vega.github.io/schema/vega-lite/v3.json",
                             "data": { "values": all_data },
+                            "hconcat": [{
+                                "mark": "bar",
+                                "transform": [
+                                    { "filter": "datum.severity != 0" },
+                                    { "filter": "datum.megye == ' BV'" },
+                                ],
+                                "width": 30,
+                                "encoding": {
+                                    "x": {
+                                        "field": "geo_loc",
+                                        "type": "nominal",
+                                        "axis": { "title": "Brassó megye" }
+                                    },
+                                    "y": ys,
+                                    "color": cs,
+                                    "order": { "field": "severity1", type: "ordinal" }
+                                }
+                            },
+                            {
+                                "mark": "bar",
+                                "transform": [
+                                    { "filter": "datum.severity != 0" },
+                                    { "filter": "datum.megye == ' MS'" },
+                                ],
+                                "width": 250,
+                                "encoding": {
+                                    "x": {
+                                        "field": "geo_loc",
+                                        "type": "nominal",
+                                        "axis": { "title": "Maros megye" }
+                                    },
+                                    "y": ys,
+                                    "color": cs,
+                                    "order": { "field": "severity1", type: "ordinal" }
+                                }
+                            },
+                            {
+                                "mark": "bar",
+                                "transform": [
+                                    { "filter": "datum.severity != 0" },
+                                    { "filter": "datum.megye == ' CV'" },
+                                ],
+                                "width": 250,
+                                "encoding": {
+                                    "x": {
+                                        "field": "geo_loc",
+                                        "type": "nominal",
+                                        "axis": { "title": "Kovászna megye" }
+                                    },
+                                    "y": ys,
+                                    "color": cs,
+                                    "order": { "field": "severity1", type: "ordinal" }
+                                }
+                            },
+                            ]
+                        }
+
+                        yourVlSpec2 = {
+                            "$schema": "https://vega.github.io/schema/vega-lite/v3.json",
+                            "data": { "values": all_data },
+                            "width": 760,
+                            "mark": "bar",
                             "transform": [
                                 { "filter": "datum.severity != 0" },
                                 { "filter": "datum.megye == ' HR'" },
                             ],
-                            "mark": "bar",
-                            "width": "600",
-                            "height": "200",
                             "encoding": {
                                 "x": {
                                     "field": "geo_loc",
                                     "type": "nominal",
-                                    "axis": { "title": "Helyszín" }
+                                    "axis": { "title": "Hargita megye" }
                                 },
-                                "y": {
-                                    "aggregate": "count",
-                                    "type": "quantitative",
-                                    "axis": { "title": "Események száma" },
-                                },
-                                "color": {
-                                    "field": "leiras",
-                                    "type": "nominal",
-                                    "scale": {
-                                        "domain": leiras.slice(1),
-                                        "range": colors.slice(1)
-                                    },
-                                    "legend": { "title": "Esemény típusa" }
-                                },
-                                "order": { "field": "severity1", "type": "nominal" }
+                                "y": ys,
+                                "color": cs2,
+                                "order": { "field": "severity1", type: "ordinal" }
                             }
                         }
 
                         vegaEmbed('#vis', yourVlSpec);
+                        vegaEmbed('#vis2', yourVlSpec2);
 
                         //END VEGA VIS
 
