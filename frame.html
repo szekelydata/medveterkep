@@ -1068,14 +1068,14 @@
                             update_chart()
                         })
 
-                        d3.select('#left')
+                        d3.select('#right')
                             .on('click', function () {
                                 counter = Math.max(counter - 1, 0);
-                                var this_data = datax[counter]['value'][z];
+                                this_data = datax[counter]['value'][z];
                                 update_labels(this_data, false)
                             })
 
-                        d3.select('#right')
+                        d3.select('#left')
                             .on('click', function () {
                                 counter = Math.min(counter + 1, datax.length);
                                 this_data = datax[counter]['value'][z];
@@ -1215,7 +1215,7 @@
                             })
                             d3.select('#center')
                                 .html(home_title +
-                                    ' &copy; 2019<br><span style="font-size:15px">frissült: ' + friss + '</span><br><i style="font-size:15px">'+verzio+' verzió</i>'
+                                    ' &copy; 2019<br><span style="font-size:15px">frissült: ' + friss + '</span><br><i style="font-size:15px">' + verzio + ' verzió</i>'
                                 )
                         }
 
@@ -1355,7 +1355,7 @@
 
                         svg
                             .append('polygon')
-                            .attr('points', 1+","+(7.3 * h)+" "+(1+2*r)+","+(7.3 * h)+" "+(1+r)+","+(7.3 * h-2*r))
+                            .attr('points', 1 + "," + (7.3 * h) + " " + (1 + 2 * r) + "," + (7.3 * h) + " " + (1 + r) + "," + (7.3 * h - 2 * r))
                             .attr('class', 'dim dim1')
                             // .attr('cx', r + 1)
                             // .attr('cy', r + 1 + 6.5 * h)
@@ -1545,6 +1545,33 @@
                         setTimeout(() => {
                             go_home()
                         }, 50)
+
+                        document.addEventListener("keydown", function (event) {
+                            if ((event.keyCode >= 33 && event.keyCode <= 34) || (event.keyCode >= 37 && event.keyCode <= 40) ||
+                                (event.keyCode == 72) || (event.keyCode == 13) || (event.keyCode == 27)) {
+                                switch (event.keyCode) {
+                                    case 33: // pg up
+                                    case 37: // left
+                                    case 38: // up
+                                        counter = Math.min(counter + 1, datax.length);
+                                        this_data = datax[counter]['value'][z];
+                                        update_labels(this_data, false)
+                                        break;
+                                    case 34: // pg down
+                                    case 39: // right
+                                    case 40: // down 
+                                        counter = Math.max(counter - 1, 0);
+                                        this_data = datax[counter]['value'][z];
+                                        update_labels(this_data, false)
+                                        break;
+                                    case 13: //enter
+                                    case 27: //esc
+                                        this_data = datax[counter]['value'][z];
+                                        update_labels(this_data, false)
+                                        break;
+                                }
+                            }
+                        }, false);
 
                     }
                 });
