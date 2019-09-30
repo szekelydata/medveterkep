@@ -561,11 +561,11 @@
                                 var iid = idate.toLocaleString("hu-HU",
                                     date_options2) + ' ' + igeo
                                 var loc = (d['Pontosabban hol?']) ? d['Pontosabban hol?'] : form_coords
-                                var sloc=[parseFloat(loc.split(',')[0]),parseFloat(loc.split(',')[1])]
                                 res.push({
                                     name: iid,
                                     symbol: 'rect',
-                                    value: ((loc == form_coords) ? geo_code[igeo] : sloc).reverse()
+                                    value: ((loc == form_coords) ? geo_code[igeo] : loc
+                                        .split(',')).reverse()
                                         .concat([sheet_severity[d['Milyen eseményről van szó?']]])
                                         .concat([leiras[sheet_severity[d[
                                             'Milyen eseményről van szó?']]]])
@@ -728,13 +728,131 @@
                             return dummy
                         }
 
-                        function filter_value(data){
-                            var hexpoints=new Array()
-                            data.forEach(function(d){
-                                hexpoints.push(d.value.slice(0,2).concat([1]))
-                            })
-                            return hexpoints
-                        }
+                        // Hexbin statistics code based on [d3-hexbin](https://github.com/d3/d3-hexbin)
+function hexBinStatistics(points, r) {
+    var dx = r * 2 * Math.sin(Math.PI / 3);
+    var dy = r * Math.sqrt(3)*Math.PI/3; //1.81
+    var binsById = {};
+    var bins = [];
+
+    for (var i = 0, n = points.length; i < n; ++i) {
+        var point = points[i];
+        var px = point[0];
+        var py = point[1];
+
+        if (isNaN(px) || isNaN(py)) {
+            continue;
+        }
+
+        var pj = Math.round(py = py / dy);
+        var pi = Math.round(px = px / dx - (pj & 1) / 2);
+        var py1 = py - pj;
+
+        if (Math.abs(py1) * 3 > 1) {
+            var px1 = px - pi;
+            var pi2 = pi + (px < pi ? -1 : 1) / 2;
+            var pj2 = pj + (py < pj ? -1 : 1);
+            var px2 = px - pi2;
+            var py2 = py - pj2;
+            if (px1 * px1 + py1 * py1 > px2 * px2 + py2 * py2) {
+                pi = pi2 + (pj & 1 ? 1 : -1) / 2;
+                pj = pj2;
+            }
+        }
+
+        var id = pi + "-" + pj;
+        var bin = binsById[id];
+        if (bin) {
+            bin.points.push(point);
+        }
+        else {
+            bins.push(bin = binsById[id] = {points: [point]});
+            bin.x = (pi + (pj & 1) / 2) * dx;
+            bin.y = pj * dy;
+        }
+    }
+
+    var maxBinLen = -Infinity;
+    for (var i = 0; i < bins.length; i++) {
+        maxBinLen = Math.max(maxBinLen, bins.length);
+    }
+
+    return {
+        maxBinLen: maxBinLen,
+        bins: bins
+    };
+}
+
+var hexagonRadiusInGeo=0.1;
+function filter_value(data){
+    var hexpoints=new Array()
+    data.forEach(function(d){
+        hexpoints.push(d.value.slice(0,2).concat([1]))
+})
+}
+
+var hexBinResult = hexBinStatistics(hexpoints,hexagonRadiusInGeo)
+    var hexdata = echarts.util.map(hexBinResult.bins, function (bin) {
+        var made = 0;
+        echarts.util.each(bin.points, function (point) {
+            made += point[2];
+        });
+        return [bin.x, bin.y, bin.points.length, made.toFixed(2)];
+    });
+    
+    function renderItemHexBin(params, api) {
+        console.log(params, api)
+        var center = api.coord([api.value(0), api.value(1)]);
+        var points = [];
+        var pointsBG = [];
+
+        var maxViewRadius = api.size([hexagonRadiusInGeo, 0])[0];
+        var minViewRadius = Math.min(maxViewRadius, 4);
+        var extentMax = Math.log(Math.sqrt(hexBinResult.maxBinLen));
+        var viewRadius = echarts.number.linearMap(
+            Math.log(Math.sqrt(api.value(2))),
+            [0, extentMax],
+            [minViewRadius, maxViewRadius]
+        );
+
+        var angle = Math.PI / 6;
+        for (var i = 0; i < 6; i++, angle += Math.PI / 3) {
+            points.push([
+                center[0] + viewRadius * Math.cos(angle),
+                center[1] + viewRadius * Math.sin(angle)
+            ]);
+            pointsBG.push([
+                center[0] + maxViewRadius * Math.cos(angle),
+                center[1] + maxViewRadius * Math.sin(angle)
+            ]);
+        }
+
+        return {
+            type: 'group',
+            children: [{
+                type: 'polygon',
+                shape: {
+                    points: points
+                },
+                style: {
+                    stroke: '#ccc',
+                    fill: api.visual('color'),
+                    lineWidth: 1
+                }
+            }, {
+                type: 'polygon',
+                shape: {
+                    points: pointsBG
+                },
+                style: {
+                    stroke: null,
+                    fill: 'rgba(0,0,0,0.5)',
+                    lineWidth: 10
+                },
+                z2: -19
+            }]
+        };
+    }
 
                         var coord_dict = {}
                         var data_dict = {}
@@ -912,7 +1030,16 @@
                                     }
                                 },
                                 zlevel: 60
-                            }]
+                            },
+                            {
+                                id: 'hm',
+                                type: 'heatmap',
+                                coordinateSystem: 'leaflet',
+                                zlevel: 5,
+                                pointSize: 5,
+                                blurSize: 6
+                            }
+                            ]
                         });
 
                         myChart2.setOption({
@@ -1124,7 +1251,7 @@
                             datay = get_timeline_data(datax);
                             dataz = filter_than(datax, z, 'exact_loc', 1);
                             datax = exact ? dataz : datax;
-                            console.log(datax,filter_value(datax))
+                            console.log(filter_value(datax))
                             myChart.setOption({
                                 series: [{
                                     id: 'points',
