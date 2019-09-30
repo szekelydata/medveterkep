@@ -256,9 +256,15 @@
 
         #legend {
             position: absolute;
-            left: 365px;
+            left: 355px;
             font-size: 17px;
-            bottom: 10px;
+            bottom: 0px;
+            background: linear-gradient(to right, rgba(256, 256, 256, 1), rgba(256, 256, 256, 0));
+            /* background-color: rgba(256, 256, 256, 0.5); */
+            /* border: solid 1px rgb(56, 37, 26); */
+            padding:5px;
+            padding-left: 15px;
+            padding-bottom: 15px;
 
         }
 
@@ -455,21 +461,23 @@
             var home_zoom = 9;
             var s = 0.005; //coordinate randomizer
             var sheet_severity = {
-                'Medvét láttam a környéken': 1,
-                'Állatokra támadt': 2,
-                'Emberre támadt': 3,
-                'Állatokra támadott': 2,
-                'Emberre támadott': 3,
-                'Emberi áldozat': 4,
-                'Medvepolitikai döntés vagy esemény': 0
+                'Medvét láttam a környéken': 2,
+                'Állatokra támadt': 3,
+                'Emberre támadt': 4,
+                'Állatokra támadott': 3,
+                'Emberre támadott': 4,
+                'Emberi áldozat': 5,
+                'Medvepolitikai döntés vagy esemény': 0,
+                'Medvére utaló nyomot láttam': 1
             }
             var leiras = ['Más esemény',
+                'Medvenyom',
                 'Medvét láttak',
                 'Állatokra támadt',
                 'Emberre támadt',
                 'Emberáldozat'
             ];
-            var colors = ['#35978f', '#80cdc1', '#dfc27d', '#8c510a', '#543005'];
+            var colors = ['#35978f','#7ABC74', '#80cdc1', '#dfc27d', '#8c510a', '#543005'];
             var symbols = { 'Székelyhon': 'circle', 'Vadkárok HR': 'triangle' };
             var z = 4; //index of params
             var today = new Date()
@@ -478,7 +486,7 @@
             var zoom = [60, 100] //starting zoom scale in percent of scale (60% about 2014-01)
             var counter = 0; //init counter for first point to show on load
             var friss = '2019.09.28'
-            var verzio = '1.1'
+            var verzio = '1.2'
             var date_options = {
                 year: "numeric",
                 month: "long",
@@ -645,8 +653,8 @@
                                 var geoCoord = [geoCoord[0] + (Math.random() - 0.5) * s, geoCoord[1] + (
                                     Math
                                         .random() - 0.5) * s]
-                                var severity = (d.severity == 3) ?
-                                    ((d.deaths > 0) ? 4 : d.severity) : d.severity;
+                                var severity = (d.severity == 4) ?
+                                    ((d.deaths > 0) ? 5 : d.severity) : d.severity;
 
                                 if (d.checked) {
                                     if (d.relevant) {
@@ -754,7 +762,10 @@
 
                         var myChart = echarts.init(document.getElementById('chart'));
                         var myChart2 = echarts.init(document.getElementById('chart2'));
-
+                        var pieces=new Array();
+                        for (i=0;i<colors.length;i++){
+                            pieces.push({value:i,label:leiras[i],color:colors[i]})
+                        }
                         options = {
                             tooltip: {
                                 trigger: 'item',
@@ -768,34 +779,9 @@
                                 dimension: 2,
                                 show: false,
                                 min: 0,
-                                max: 4,
+                                max: 5,
                                 inverse: true,
-                                pieces: [{
-                                    value: 0,
-                                    label: leiras[0],
-                                    color: colors[0]
-                                },
-                                {
-                                    value: 1,
-                                    label: leiras[1],
-                                    color: colors[1]
-                                },
-                                {
-                                    value: 2,
-                                    label: leiras[2],
-                                    color: colors[2]
-                                },
-                                {
-                                    value: 3,
-                                    label: leiras[3],
-                                    color: colors[3]
-                                },
-                                {
-                                    value: 4,
-                                    label: leiras[4],
-                                    color: colors[4]
-                                }
-                                ],
+                                pieces: pieces,
                                 itemWidth: 30,
                                 itemHeight: 20,
                                 textStyle: {
@@ -930,7 +916,7 @@
                             },
                             xAxis: {
                                 gridIndex: 0,
-                                max: 4,
+                                max: 5,
                                 inverse: true,
                                 show: false
                             },
@@ -1241,14 +1227,14 @@
                         d3.select('#tw')
                             .attr('href', 'https://twitter.com/home?status=' + urlFormatter(tweet))
 
-                        var toggle = [true, true, true, true, true];
+                        var toggle = [true, true, true, true, true, true];
                         var rtoggle = { 'Medveradar': true, 'Székelyhon': true, 'Vadkárok HR': true };
                         var exact = false;
                         var h = 25;
                         var r = 10;
 
                         var svg = d3.select('body').append('div').attr('id', 'legend')
-                            .append('svg').attr('height', 247).attr('width', 170)
+                            .append('svg').attr('height', 247+1*h).attr('width', 170)
 
                         svg.selectAll('.cat')
                             .data(toggle)
@@ -1312,7 +1298,7 @@
                             .append('circle')
                             .attr('class', 'dim dim0')
                             .attr('cx', r + 1)
-                            .attr('cy', r + 1 + 5.5 * h)
+                            .attr('cy', r + 1 + 6.5 * h)
                             .attr('r', r)
                             .style('fill', '#9EA8B1')
                             .style('stroke', function (d, i) {
@@ -1340,7 +1326,7 @@
                             })
                             .attr('x', 2 * r + 5)
                             .attr('y', function (d, i) {
-                                return 1.5 * r + 1 + 5.5 * h
+                                return 1.5 * r + 1 + 6.5 * h
                             })
                             .text(function (d, i) {
                                 return 'Székelyhon'
@@ -1355,7 +1341,7 @@
 
                         svg
                             .append('polygon')
-                            .attr('points', 1 + "," + (7.3 * h) + " " + (1 + 2 * r) + "," + (7.3 * h) + " " + (1 + r) + "," + (7.3 * h - 2 * r))
+                            .attr('points', 1 + "," + (8.3 * h) + " " + (1 + 2 * r) + "," + (8.3 * h) + " " + (1 + r) + "," + (8.3 * h - 2 * r))
                             .attr('class', 'dim dim1')
                             // .attr('cx', r + 1)
                             // .attr('cy', r + 1 + 6.5 * h)
@@ -1386,7 +1372,7 @@
                             })
                             .attr('x', 2 * r + 5)
                             .attr('y', function (d, i) {
-                                return 1.5 * r + 1 + 6.5 * h
+                                return 1.5 * r + 1 + 7.5 * h
                             })
                             .text(function (d, i) {
                                 return 'Vadkárok HR'
@@ -1403,7 +1389,7 @@
                             .append('rect')
                             .attr('class', 'dim dim2')
                             .attr('x', 1)
-                            .attr('y', 1 + 7.5 * h)
+                            .attr('y', 1 + 8.5 * h)
                             .attr('width', 2 * r)
                             .attr('height', 2 * r)
                             .style('fill', '#9EA8B1')
@@ -1432,7 +1418,7 @@
                             })
                             .attr('x', 2 * r + 5)
                             .attr('y', function (d, i) {
-                                return 1.5 * r + 1 + 7.5 * h
+                                return 1.5 * r + 1 + 8.5 * h
                             })
                             .text(function (d, i) {
                                 return 'Medveradar'
@@ -1449,7 +1435,7 @@
                             .append('rect')
                             .attr('class', 'exact')
                             .attr('x', 1)
-                            .attr('y', 1 + 9 * h)
+                            .attr('y', 1 + 10 * h)
                             .attr('width', 2 * r)
                             .attr('height', 2 * r)
                             .style('fill', '#9EA8B1')
@@ -1464,7 +1450,7 @@
                             .append('rect')
                             .attr('class', 'exact')
                             .attr('x', 1 + 0.6 * r)
-                            .attr('y', 1 + 0.6 * r + 9 * h)
+                            .attr('y', 1 + 0.6 * r + 10 * h)
                             .attr('width', 0.8 * r)
                             .attr('height', 0.8 * r)
                             .style('fill', '#9EA8B1')
@@ -1486,7 +1472,7 @@
                             })
                             .attr('x', 2 * r + 5)
                             .attr('y', function (d, i) {
-                                return 1.5 * r + 1 + 9 * h
+                                return 1.5 * r + 1 + 10 * h
                             })
                             .text(function (d, i) {
                                 return 'Pontos hely ismert'

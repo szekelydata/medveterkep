@@ -6,12 +6,12 @@ def text_processor(title,content):
     for i in tamadas:
         if i in title+content:
             relevant=1
-            severity=2
+            severity=3
     tamadas=[u'halál',u'áldozat',u'ölt ',u'pusztít']
     for i in tamadas:
         if i in title+content:
             relevant=1
-            severity=3
+            severity=4
     tamadas=[u'medve',u'medvé']
     for i in tamadas:
         if i in title.replace(',',' ').replace('.',' ').lower():
