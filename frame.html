@@ -364,6 +364,10 @@
             background-color: #eee;
             /* Add a hover effect to all links, except for headers */
         }
+        #content ul li {
+            width:270px;
+            word-wrap: break-word;
+        }
     </style>
     <video loop muted autoplay id='v'>
         <source src="viz/medve.mp4" type="video/mp4">
@@ -398,7 +402,7 @@
                 <table id='desc'>
                     <tr>
                         <td rowspan='3' style='width:115px;'>
-                            <img id='image' src='viz/medv.png'>
+                            <img id='image' src='viz/medv.png' style='margin-left:1px;'>
                         </td>
 
                         <td class='head' id='ddate'><i class="fas fa-clock"></i><b id='date'></b></td>
