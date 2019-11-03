@@ -463,7 +463,7 @@
             var home_center = [25.3, 46.4];
             var home_title = 'Medvetérkép';
             var home_zoom = 9;
-            var s = 0.005; //coordinate randomizer
+            var geo_jitter_s = 0.005; //coordinate randomizer
             var sheet_severity = {
                 'Medvét láttam a környéken': 2,
                 'Állatokra támadt': 3,
@@ -523,6 +523,11 @@
                 return dummy
             }
 
+            function geo_jitter(geoCoord,s){
+                return [geoCoord[0] + (Math.random() - 0.5) * s, geoCoord[1] + (Math.random() - 0.5) * s]
+                                
+            }
+
             var GSheetID = '1-Ygp1M_nIK-iHq3hqF3qtKNgq6tZHttfzT42_1d_L-E'
             var sheetdata = [];
             var query1 = new
@@ -560,16 +565,31 @@
                                 var pt = d['Mikor történt az eset?'].split("/");
                                 var dt = pt[1] + '/' + pt[0] + '/' + pt[2];
                                 var iname = d['Submission ID'];
+                                var isource='Medveradar';
                                 var idate = dt ? new Date(Date.parse(dt)) : 'Ismeretlen';
                                 var igeo = d['Melyik település környékén?'].split('\n')[1];
                                 var iid = idate.toLocaleString("hu-HU",
                                     date_options2) + ' ' + igeo
                                 var loc = (d['Pontosabban hol?']) ? d['Pontosabban hol?'] : form_coords
                                 var sloc=[parseFloat(loc.split(',')[0]),parseFloat(loc.split(',')[1])]
+                                if (loc == form_coords) {
+                                    if (geo_code[igeo]) {
+                                        geo_coord=geo_code[igeo];
+                                        geo_coord=[geo_coord[1],geo_coord[0]];
+                                        geo_coord=geo_jitter(geo_coord,geo_jitter_s);
+                                        console.log(isource,': geocoded', igeo, 'to', geo_coord)
+                                    }
+                                    else {
+                                        console.log(isource,": can't geocode", igeo)
+                                    }
+                                }
+                                else {
+                                    var geo_coord=sloc.reverse();
+                                }
                                 res.push({
                                     name: iid,
                                     symbol: 'rect',
-                                    value: ((loc == form_coords) ? geo_code[igeo] : sloc).reverse()
+                                    value: geo_coord
                                         .concat([sheet_severity[d['Milyen eseményről van szó?']]])
                                         .concat([leiras[sheet_severity[d[
                                             'Milyen eseményről van szó?']]]])
@@ -595,7 +615,7 @@
                                             'name': iid,
                                             'image': d['Fotód van róla?'],
                                             'type': 'news',
-                                            'source': 'Medveradar',
+                                            'source': isource,
                                             'severity': sheet_severity[d[
                                                 'Milyen eseményről van szó?']],
                                             'title': (d[
@@ -646,17 +666,26 @@
                             var res = [];
                             for (var i = 0; i < data.length; i++) {
                                 var d = data[i];
-                                if (!d['longitude'])
-                                    if (d.geo_loc)
-                                        if (geo_code[d.geo_loc])
-                                            console.log('geocoded', d.geo_loc, 'to', geo_code[d.geo_loc])
-                                        else
-                                            console.log("can't geocode", d.geo_loc)
-                                s = (d.exact_loc) ? (s * 1) : s; //reduce jitter if exact
-                                var geoCoord = (!d['longitude']) ? (d.geo_loc ? geo_code[d.geo_loc].reverse() : home) : [d['longitude'], d['latitude']];
-                                var geoCoord = [geoCoord[0] + (Math.random() - 0.5) * s, geoCoord[1] + (
-                                    Math
-                                        .random() - 0.5) * s]
+                                var isource=d.source;
+                                // var geoCoord = (!d['longitude']) ? (d.geo_loc ? [geo_code[d.geo_loc][1],geo_code[d.geo_loc][0]] : home) : [d['longitude'], d['latitude']];
+                                if (!d['longitude']) {
+                                    if (d.geo_loc) {
+                                        if (geo_code[d.geo_loc]) {
+                                            var geo_coord=[geo_code[d.geo_loc][1],geo_code[d.geo_loc][0]];
+                                            console.log(isource,': geocoded', d.geo_loc, 'to', geo_coord)
+                                        }
+                                        else {
+                                            console.log(isource,": can't geocode", d.geo_loc)
+                                        }
+                                    }
+                                    else {
+                                        var geo_coord=home;
+                                    }
+                                }
+                                else {
+                                    var geo_coord=[d['longitude'], d['latitude']];
+                                }
+                                geo_coord=(d.exact_loc) ? geo_jitter(geo_coord, geo_jitter_s*0.3) : geo_jitter(geo_coord, geo_jitter_s)
                                 var severity = (d.severity == 4) ?
                                     ((d.deaths > 0) ? 5 : d.severity) : d.severity;
 
@@ -671,7 +700,7 @@
                                             res.push({
                                                 name: iid,
                                                 symbol: symbols[d.source],
-                                                value: geoCoord
+                                                value: geo_coord
                                                     .concat([severity, leiras[severity]])
                                                     .concat({
                                                         'geo_loc': igeo,
@@ -684,7 +713,7 @@
                                                         'image': d.image,
                                                         'severity': severity,
                                                         'type': 'news',
-                                                        'source': d.source,
+                                                        'source': isource,
                                                         'title': d.title
                                                     })
                                             });
@@ -764,7 +793,6 @@
                             return new Date(a.start).getTime() - new Date(b.start).getTime()
                         })
                         var max_time = time_array[0]
-                        // var min_time=time_array.reverse()[0]
                         var min_time = new Date(Date.parse(minyear))
 
                         var this_data = sorted_data[counter]['value'][z];
@@ -1128,7 +1156,7 @@
                             datay = get_timeline_data(datax);
                             dataz = filter_than(datax, z, 'exact_loc', 1);
                             datax = exact ? dataz : datax;
-                            console.log(datax,filter_value(datax))
+                            // console.log(datax,filter_value(datax))
                             myChart.setOption({
                                 series: [{
                                     id: 'points',
