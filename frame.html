@@ -490,7 +490,7 @@
             var zoom = [60, 100] //starting zoom scale in percent of scale (60% about 2014-01)
             var counter = 0; //init counter for first point to show on load
             var friss = '2019.10.31'
-            var verzio = '1.2.1'
+            var verzio = '1.2.2'
             var date_options = {
                 year: "numeric",
                 month: "long",
@@ -1350,8 +1350,8 @@
                             .on('click', function (d) {
                                 i = 'Székelyhon';
                                 rtoggle[i] = !(rtoggle[i]);
-                                d3.selectAll('.dim' + i).style('opacity', rtoggle[i] ? 1 :
-                                    min_label_opc)
+                                d3.selectAll('.dim0').style('opacity', rtoggle[i] ? 1 :
+                                    min_label_opc*1.5)
                                 update_chart();
                             })
 
@@ -1374,8 +1374,8 @@
                             .on('click', function (d) {
                                 i = 'Székelyhon';
                                 rtoggle[i] = !(rtoggle[i]);
-                                d3.selectAll('.dim' + i).style('opacity', rtoggle[i] ? 1 :
-                                    min_label_opc)
+                                d3.selectAll('.dim0').style('opacity', rtoggle[i] ? 1 :
+                                    min_label_opc*1.5)
                                 update_chart();
                             })
 
@@ -1396,8 +1396,8 @@
                             .on('click', function (d) {
                                 i = 'Vadkárok HR';
                                 rtoggle[i] = !(rtoggle[i]);
-                                d3.selectAll('.dim' + i).style('opacity', rtoggle[i] ? 1 :
-                                    min_label_opc)
+                                d3.selectAll('.dim1').style('opacity', rtoggle[i] ? 1 :
+                                    min_label_opc*1.5)
                                 update_chart();
                             })
 
@@ -1420,8 +1420,8 @@
                             .on('click', function (d) {
                                 i = 'Vadkárok HR';
                                 rtoggle[i] = !(rtoggle[i]);
-                                d3.selectAll('.dim' + i).style('opacity', rtoggle[i] ? 1 :
-                                    min_label_opc)
+                                d3.selectAll('.dim1').style('opacity', rtoggle[i] ? 1 :
+                                    min_label_opc*1.5)
                                 update_chart();
                             })
 
@@ -1442,8 +1442,8 @@
                             .on('click', function (d) {
                                 i = 'Medveradar';
                                 rtoggle[i] = !(rtoggle[i]);
-                                d3.selectAll('.dim' + i).style('opacity', rtoggle[i] ? 1 :
-                                    min_label_opc)
+                                d3.selectAll('.dim2').style('opacity', rtoggle[i] ? 1 :
+                                    min_label_opc*1.5)
                                 update_chart();
                             })
 
@@ -1466,8 +1466,8 @@
                             .on('click', function (d) {
                                 i = 'Medveradar';
                                 rtoggle[i] = !(rtoggle[i]);
-                                d3.selectAll('.dim' + i).style('opacity', rtoggle[i] ? 1 :
-                                    min_label_opc)
+                                d3.selectAll('.dim2').style('opacity', rtoggle[i] ? 1 :
+                                    min_label_opc*1.5)
                                 update_chart();
                             })
 
