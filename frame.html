@@ -262,7 +262,7 @@
             background: linear-gradient(to right, rgba(256, 256, 256, 1), rgba(256, 256, 256, 0));
             /* background-color: rgba(256, 256, 256, 0.5); */
             /* border: solid 1px rgb(56, 37, 26); */
-            padding:5px;
+            padding: 5px;
             padding-left: 15px;
             padding-bottom: 15px;
 
@@ -364,8 +364,9 @@
             background-color: #eee;
             /* Add a hover effect to all links, except for headers */
         }
+
         #content ul li {
-            width:270px;
+            width: 270px;
             word-wrap: break-word;
         }
     </style>
@@ -481,7 +482,7 @@
                 'Emberre támadt',
                 'Emberáldozat'
             ];
-            var colors = ['#35978f','#7ABC74', '#80cdc1', '#dfc27d', '#8c510a', '#543005'];
+            var colors = ['#35978f', '#7ABC74', '#80cdc1', '#dfc27d', '#8c510a', '#543005'];
             var symbols = { 'Székelyhon': 'circle', 'Vadkárok HR': 'triangle' };
             var z = 4; //index of params
             var today = new Date()
@@ -490,7 +491,7 @@
             var zoom = [60, 100] //starting zoom scale in percent of scale (60% about 2014-01)
             var counter = 0; //init counter for first point to show on load
             var friss = '2020.08.26'
-            var verzio = '1.2.3'
+            var verzio = '1.2.4'
             var date_options = {
                 year: "numeric",
                 month: "long",
@@ -523,13 +524,13 @@
                 return dummy
             }
 
-            function geo_jitter(geoCoord,s){
+            function geo_jitter(geoCoord, s) {
                 return [geoCoord[0] + (Math.random() - 0.5) * s, geoCoord[1] + (Math.random() - 0.5) * s]
-                                
+
             }
 
             // var GSheetID = '1-Ygp1M_nIK-iHq3hqF3qtKNgq6tZHttfzT42_1d_L-E' //deprecated
-            var GSheetID = '1wac1pHJ5MJITEOCru2Tz2Td9eflIWFp6mw1y6itbeCs' 
+            var GSheetID = '1wac1pHJ5MJITEOCru2Tz2Td9eflIWFp6mw1y6itbeCs'
             var sheetdata = [];
             var query1 = new
                 google.visualization.Query("https://docs.google.com/spreadsheet/ccc?key=" + GSheetID);
@@ -566,26 +567,26 @@
                                 var pt = d['Mikor történt az eset?'].split("/");
                                 var dt = pt[1] + '/' + pt[0] + '/' + pt[2];
                                 var iname = d['Submission ID'];
-                                var isource='Medveradar';
+                                var isource = 'Medveradar';
                                 var idate = dt ? new Date(Date.parse(dt)) : 'Ismeretlen';
                                 var igeo = d['Melyik település környékén?'].split('\n')[1];
                                 var iid = idate.toLocaleString("hu-HU",
                                     date_options2) + ' ' + igeo
                                 var loc = (d['Pontosabban hol?']) ? d['Pontosabban hol?'] : form_coords
-                                var sloc=[parseFloat(loc.split(',')[0]),parseFloat(loc.split(',')[1])]
+                                var sloc = [parseFloat(loc.split(',')[0]), parseFloat(loc.split(',')[1])]
                                 if (loc == form_coords) {
                                     if (geo_code[igeo]) {
-                                        geo_coord=geo_code[igeo];
-                                        geo_coord=[geo_coord[1],geo_coord[0]];
-                                        geo_coord=geo_jitter(geo_coord,geo_jitter_s);
-                                        console.log(isource,': geocoded', igeo, 'to', geo_coord)
+                                        geo_coord = geo_code[igeo];
+                                        geo_coord = [geo_coord[1], geo_coord[0]];
+                                        geo_coord = geo_jitter(geo_coord, geo_jitter_s);
+                                        console.log(isource, ': geocoded', igeo, 'to', geo_coord)
                                     }
                                     else {
-                                        console.log(isource,": can't geocode", igeo)
+                                        console.log(isource, ": can't geocode", igeo)
                                     }
                                 }
                                 else {
-                                    var geo_coord=sloc.reverse();
+                                    var geo_coord = sloc.reverse();
                                 }
                                 res.push({
                                     name: iid,
@@ -667,26 +668,26 @@
                             var res = [];
                             for (var i = 0; i < data.length; i++) {
                                 var d = data[i];
-                                var isource=d.source;
+                                var isource = d.source;
                                 // var geoCoord = (!d['longitude']) ? (d.geo_loc ? [geo_code[d.geo_loc][1],geo_code[d.geo_loc][0]] : home) : [d['longitude'], d['latitude']];
                                 if (!d['longitude']) {
                                     if (d.geo_loc) {
                                         if (geo_code[d.geo_loc]) {
-                                            var geo_coord=[geo_code[d.geo_loc][1],geo_code[d.geo_loc][0]];
-                                            console.log(isource,': geocoded', d.geo_loc, 'to', geo_coord)
+                                            var geo_coord = [geo_code[d.geo_loc][1], geo_code[d.geo_loc][0]];
+                                            console.log(isource, ': geocoded', d.geo_loc, 'to', geo_coord)
                                         }
                                         else {
-                                            console.log(isource,": can't geocode", d.geo_loc)
+                                            console.log(isource, ": can't geocode", d.geo_loc)
                                         }
                                     }
                                     else {
-                                        var geo_coord=home;
+                                        var geo_coord = home;
                                     }
                                 }
                                 else {
-                                    var geo_coord=[d['longitude'], d['latitude']];
+                                    var geo_coord = [d['longitude'], d['latitude']];
                                 }
-                                geo_coord=(d.exact_loc) ? geo_jitter(geo_coord, geo_jitter_s*0.3) : geo_jitter(geo_coord, geo_jitter_s)
+                                geo_coord = (d.exact_loc) ? geo_jitter(geo_coord, geo_jitter_s * 0.3) : geo_jitter(geo_coord, geo_jitter_s)
                                 var severity = (d.severity == 4) ?
                                     ((d.deaths > 0) ? 5 : d.severity) : d.severity;
 
@@ -762,10 +763,10 @@
                             return dummy
                         }
 
-                        function filter_value(data){
-                            var hexpoints=new Array()
-                            data.forEach(function(d){
-                                hexpoints.push(d.value.slice(0,2).concat([1]))
+                        function filter_value(data) {
+                            var hexpoints = new Array()
+                            data.forEach(function (d) {
+                                hexpoints.push(d.value.slice(0, 2).concat([1]))
                             })
                             return hexpoints
                         }
@@ -803,9 +804,9 @@
 
                         var myChart = echarts.init(document.getElementById('chart'));
                         var myChart2 = echarts.init(document.getElementById('chart2'));
-                        var pieces=new Array();
-                        for (i=0;i<colors.length;i++){
-                            pieces.push({value:i,label:leiras[i],color:colors[i]})
+                        var pieces = new Array();
+                        for (i = 0; i < colors.length; i++) {
+                            pieces.push({ value: i, label: leiras[i], color: colors[i] })
                         }
                         options = {
                             tooltip: {
@@ -840,15 +841,38 @@
                             leaflet: {
                                 height: '100%',
                                 roam: true,
-                                tiles: [{
-                                    label: 'Open Street Map',
-                                    // urlTemplate: 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png?lang=hu',
-                                    // https://phabricator.wikimedia.org/T245145
-                                    urlTemplate: 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                    options: {
-                                        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="https://maps.wikimedia.org" target="_blank">Wikimedia</a>'
-                                    }
-                                }]
+                                tiles: [
+                                    {
+                                        label: 'Open Street Map',
+                                        // urlTemplate: 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png?lang=hu',
+                                        // https://phabricator.wikimedia.org/T245145
+                                        // urlTemplate: 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                        // urlTemplate: 'https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
+                                        // urlTemplate: 'https://api.maptiler.com/maps/pastel/{z}/{x}/{y}.png?key=qSUrAQvCAoWSVRdpq6sP',
+                                        urlTemplate: 'https://tiles.merretekerjek.hu/tiles/merretekerjek-montival/{z}/{x}/{y}.png',
+                                        // urlTemplate: 'https://tiles.merretekerjek.hu/tiles/merretekerjek-montival-overlay/{z}/{x}/{y}.png',
+                                        // urlTemplate: 'https://tiles.merretekerjek.hu/tiles/osmorg-overlay/{z}/{x}/{y}.png',
+                                        // urlTemplate: 'https://tiles.merretekerjek.hu/tiles/merretekerjek-varosban/{z}/{x}/{y}.png',
+                                        options: {
+                                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="https://maps.wikimedia.org" target="_blank">Wikimedia</a>',
+                                        },
+                                    },
+                                    // {
+                                    //     label: 'Open Street Map 2',
+                                    //     // urlTemplate: 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png?lang=hu',
+                                    //     // https://phabricator.wikimedia.org/T245145
+                                    //     urlTemplate: 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                    //     // urlTemplate: 'https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png',
+                                    //     // urlTemplate: 'https://api.maptiler.com/maps/pastel/{z}/{x}/{y}.png?key=qSUrAQvCAoWSVRdpq6sP',
+                                    //     // urlTemplate: 'https://tiles.merretekerjek.hu/tiles/merretekerjek-montival/{z}/{x}/{y}.png',
+                                    //     // urlTemplate: 'https://tiles.merretekerjek.hu/tiles/merretekerjek-montival-overlay/{z}/{x}/{y}.png',
+                                    //     // urlTemplate: 'https://tiles.merretekerjek.hu/tiles/osmorg-overlay/{z}/{x}/{y}.png',
+                                    //     // urlTemplate: 'https://tiles.merretekerjek.hu/tiles/merretekerjek-varosban/{z}/{x}/{y}.png',
+                                    //     options: {
+                                    //         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="https://maps.wikimedia.org" target="_blank">Wikimedia</a>',
+                                    //     }
+                                    // }
+                                ]
                             },
                             series: [{
                                 id: 'points',
@@ -1277,7 +1301,7 @@
                         var r = 10;
 
                         var svg = d3.select('body').append('div').attr('id', 'legend')
-                            .append('svg').attr('height', 247+1*h).attr('width', 170)
+                            .append('svg').attr('height', 247 + 1 * h).attr('width', 170)
 
                         svg.selectAll('.cat')
                             .data(toggle)
@@ -1354,7 +1378,7 @@
                                 i = 'Székelyhon';
                                 rtoggle[i] = !(rtoggle[i]);
                                 d3.selectAll('.dim0').style('opacity', rtoggle[i] ? 1 :
-                                    min_label_opc*1.5)
+                                    min_label_opc * 1.5)
                                 update_chart();
                             })
 
@@ -1378,7 +1402,7 @@
                                 i = 'Székelyhon';
                                 rtoggle[i] = !(rtoggle[i]);
                                 d3.selectAll('.dim0').style('opacity', rtoggle[i] ? 1 :
-                                    min_label_opc*1.5)
+                                    min_label_opc * 1.5)
                                 update_chart();
                             })
 
@@ -1400,7 +1424,7 @@
                                 i = 'Vadkárok HR';
                                 rtoggle[i] = !(rtoggle[i]);
                                 d3.selectAll('.dim1').style('opacity', rtoggle[i] ? 1 :
-                                    min_label_opc*1.5)
+                                    min_label_opc * 1.5)
                                 update_chart();
                             })
 
@@ -1424,7 +1448,7 @@
                                 i = 'Vadkárok HR';
                                 rtoggle[i] = !(rtoggle[i]);
                                 d3.selectAll('.dim1').style('opacity', rtoggle[i] ? 1 :
-                                    min_label_opc*1.5)
+                                    min_label_opc * 1.5)
                                 update_chart();
                             })
 
@@ -1446,7 +1470,7 @@
                                 i = 'Medveradar';
                                 rtoggle[i] = !(rtoggle[i]);
                                 d3.selectAll('.dim2').style('opacity', rtoggle[i] ? 1 :
-                                    min_label_opc*1.5)
+                                    min_label_opc * 1.5)
                                 update_chart();
                             })
 
@@ -1470,7 +1494,7 @@
                                 i = 'Medveradar';
                                 rtoggle[i] = !(rtoggle[i]);
                                 d3.selectAll('.dim2').style('opacity', rtoggle[i] ? 1 :
-                                    min_label_opc*1.5)
+                                    min_label_opc * 1.5)
                                 update_chart();
                             })
 
