@@ -842,7 +842,9 @@
                                 roam: true,
                                 tiles: [{
                                     label: 'Open Street Map',
-                                    urlTemplate: 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png?lang=hu',
+                                    // urlTemplate: 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png?lang=hu',
+                                    // https://phabricator.wikimedia.org/T245145
+                                    urlTemplate: 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
                                     options: {
                                         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles courtesy of <a href="https://maps.wikimedia.org" target="_blank">Wikimedia</a>'
                                     }
