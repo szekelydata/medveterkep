@@ -3,6 +3,9 @@
 ========
 
 [![Alt text](snapshot.png "Optional title")](https://medve.csaladen.es/)  
+
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/szekelydata/medveterkep/blob/master/LICENSE)
+[![GitHub last commit](https://img.shields.io/github/last-commit/szekelydata/medveterkep?label=last%20update)](https://github.com/szekelydata/medveterkep)
   
 Ez a kódtár tartalmazza a __[Medvetérkép](https://medve.csaladen.es/)__ weboldal forráskódját - mindent amire szükséged lehet, hogy reprodukáld a weboldalon bemutatottakat.
 Látogasd meg a __[SZÉKELYDATA](https://szekelydata.csaladen.es)__ blogot.  
